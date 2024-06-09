@@ -3,81 +3,160 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>CYBERPUNK</title>
+	<title>New York Property Sales</title>
 	<link href="https://fonts.googleapis.com/css2?family=Advent+Pro:wght@400;700&family=VT323&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="./style.css">
+	<script src="https://cdn.jsdelivr.net/npm/alasql@4.3.3/dist/alasql.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@2.3.1/dist/chartjs-chart-treemap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/numbro@2.5.0/dist/numbro.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.js"></script>
+
 	<script src="./script.js"></script>
 </head>
-<body>
-	<header style="background-color: #000; height: 50px;">
-		<a style="color: #f9f002; font-size: 2rem;">CAPSTONE PROJECT</a>
-	</header>
+<body class="page-container">
+	<div id="loading" class="loading-container d-flex justify-content-center align-items-center">
+		<div class="loader"></div>
+	</div>
+	<div class="row align-items-center header">
+		<div class="col-6">
+			<h1 class="header-title cyberpunk glitched">NYC Property Sales</h1>
+		</div>
+		<div class="col-6">
+			<div class="d-flex justify-content-end align-items-center">
+				<div>
+					<div id="list-date" class="dropdown-check-list">
+					  <span class="anchor">Date</span>
+					  <ul id="list-date-items" class="items"></ul>
+					</div>
+				</div>
+				<div class="filter-block">
+					<div id="list-borough" class="dropdown-check-list">
+					  <span class="anchor">Borough</span>
+					  <ul id="list-borough-items" class="items"></ul>
+					</div>
+				</div>
+				<div class="filter-block">
+					<button type="button" class="btn cyberpunk" onclick="beginFilter()">
+						Filter
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="row">
-		<div class="col-3 text-center">
-      		<button class="cyberpunk green">EMPAT KOLOM</button>
+		<div class="col-3">
+			<div class="cyberpunk">
+				<h1 class="cyberpunk glitched" id="totalSalesPrice">...</h1>
+				<h6>Total Sales Price</h6>
+			</div>
 		</div>
-		<div class="col-3 text-center">
-      		<button class="cyberpunk purple">EMPAT KOLOM</button>
+		<div class="col-3">
+			<div class="cyberpunk">
+				<h1 class="cyberpunk glitched" id="totalUnits">...</h1>
+				<h6>Total Units</h6>
+			</div>
 		</div>
-		<div class="col-3 text-center">
-      		<button class="cyberpunk blue">EMPAT KOLOM</button>
+		<div class="col-3">
+			<div class="cyberpunk">
+				<h1 class="cyberpunk glitched" id="totalBuildings">...</h1>
+				<h6>Total Buildings</h6>
+			</div>
 		</div>
-		<div class="col-3 text-center">
-      		<button class="cyberpunk red">EMPAT KOLOM</button>
+		<div class="col-3">
+			<div class="cyberpunk">
+				<h1 class="cyberpunk glitched" id="totalLandSquareUnits">...</h1>
+				<h6>Total Land Square Units (m<sup>2</sup>)</h6>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-8">
+			<div class="cyberpunk">
+				<h3 class="cyberpunk glitched">Sales Trend by Borough</h3>
+				<canvas id="chartSalesTrendByBorough"></canvas>
+			</div>
+		</div>
+		<div class="col-4">
+			<div class="cyberpunk">
+				<h3 class="cyberpunk glitched">Table Data</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="text-center">No</th>
+							<th class="text-center">Borough</th>
+							<th class="text-end">Total Sales</th>
+						</tr>
+					</thead>
+					<tbody id="table-of-sales-trend-by-borough"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12">
+			<div class="cyberpunk">
+				<h3 class="cyberpunk glitched">Sales Trend</h3>
+				<canvas id="chartSalesTrend"></canvas>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12">
+			<div class="cyberpunk">
+				<h3 class="cyberpunk glitched">Unit Trend by Residential Type</h3>
+				<canvas id="chartUnitTrendByResidentialType"></canvas>
+			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-6">
 			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">LINE CHART</h3> 
-				<canvas id="lineChart"></canvas>
-		  	</div>
+				<h3 class="cyberpunk glitched">Total Land Square By Borough</h3>
+				<canvas id="chartLandSquareByBorough"></canvas>
+			</div>
 		</div>
 		<div class="col-6">
 			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">BAR CHART</h3> 
-				<canvas id="barChart"></canvas>
-		  	</div>
+				<h3 class="cyberpunk glitched">Total Unit By Borough</h3>
+				<canvas id="chartTotalUnitByBorough"></canvas>
+			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-4">
+		<div class="col-12">
 			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">TIGA KOLOM</h3>
-		  	</div>
-		</div>
-		<div class="col-4">
-			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">TIGA KOLOM</h3>
-		  	</div>
-		</div>
-		<div class="col-4">
-			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">TIGA KOLOM</h3>
-		  	</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-3">
-			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">EMPAT KOLOM</h3>
-		  	</div>
-		</div>
-		<div class="col-3">
-			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">EMPAT KOLOM</h3>
-		  	</div>
-		</div>
-		<div class="col-3">
-			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">EMPAT KOLOM</h3>
-		  	</div>
-		</div>
-		<div class="col-3">
-			<div class="cyberpunk">
-				<h3 class="cyberpunk glitched">EMPAT KOLOM</h3>
-		  	</div>
+				<h3 class="cyberpunk glitched">Data View</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="text-center">No</th>
+							<th>Date</th>
+							<th>Borough</th>
+							<th>Classification</th>
+							<th>Residential</th>
+							<th>Unit</th>
+							<th class="text-end">Sales</th>
+							<th class="text-end">LOT</th>
+							<th class="text-end">Land Size</th>
+						</tr>
+					</thead>
+					<tbody id="data-table"></tbody>
+				</table>
+				<div class="d-flex justify-content-between align-items-center gap-3">
+					<div>
+						<span id="table-data-status"></span>
+					</div>
+					<div>
+						<button id="table-data-btn-prev" type="button" class="btn cyberpunk" onclick="tablePrevPage()">
+							<span>Prev</span>
+						</button>
+						<button id="table-data-btn-next" type="button" class="btn cyberpunk" onclick="tableNextPage()">
+							<span>Next</span>
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
